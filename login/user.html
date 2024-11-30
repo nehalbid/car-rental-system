@@ -15,14 +15,14 @@
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDYo0X3QwxDhDnWNV7uQNE2CQR5Mlu0hMs",
-      authDomain: "carrental-8a364.firebaseapp.com",
-      projectId: "carrental-8a364",
-      storageBucket: "carrental-8a364.appspot.com",
-      messagingSenderId: "496241629894",
-      appId: "1:496241629894:web:3deefe743d9bc3a44615c7",
-      measurementId: "G-85X3GK7MTR"
-    };
+  apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+  authDomain: "car-rental-system-27b86.firebaseapp.com",
+  projectId: "car-rental-system-27b86",
+  storageBucket: "car-rental-system-27b86.firebasestorage.app",
+  messagingSenderId: "285344536169",
+  appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
+  measurementId: "G-470VBKVXS0"
+};
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -71,8 +71,8 @@
 
         // Set a timer to redirect after 1 second (1000 milliseconds)
       setTimeout(function() {
-      window.location.href = "/main-web/index.html";
-      }, 1000);
+      window.location.href = "/index.html";
+      }, 500);
          
         } else {
           alert('Access denied: You are not authorized as a user.');

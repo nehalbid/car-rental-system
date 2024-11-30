@@ -83,12 +83,12 @@
           />
         </div>
         <div class="input__group">
-          <label for="start">Pick up date</label>
+          <label for="start">Pickup date</label>
           <input
             type="text"
             name="start"
             id="start"
-            placeholder="Nov 25, 10:00 AM"
+            placeholder=""
           />
         </div>
         <div class="input__group">
@@ -97,10 +97,45 @@
             type="text"
             name="stop"
             id="stop"
-            placeholder="Nov 26, 9:00 AM"
+            placeholder=""
           />
         </div>
-        <button class="btn">Search <i class="ri-search-line"></i></button>
+        <script>
+          // Format the current date and time
+          const now = new Date();
+          const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+          const formattedDateNow = now.toLocaleString('en-US', options);
+        
+          // Set the placeholder value for the current date
+          document.getElementById('start').placeholder = formattedDateNow;
+        
+          // Add one day to the current date
+          const tomorrow = new Date(now);
+          tomorrow.setDate(now.getDate() + 1);
+          const formattedDateTomorrow = tomorrow.toLocaleString('en-US', options);
+        
+          // Set the placeholder value for one day after
+          document.getElementById('stop').placeholder = formattedDateTomorrow;
+        </script>
+        <button class="btn" onclick="showAlert()">Search <i class="ri-search-line"></i></button>
+
+        <script>
+          function showAlert() {
+            const quotes = [
+              "Be patient as the site is under construction... please select cars manually from the webpage.",
+              "Good things take time! Explore the cars manually while we polish up the site.",
+              "The best journeys start with a little patience. Browse the cars manually for now!",
+              "Construction in progress! Meanwhile, check out the cars directly on the page.",
+              "We’re building something amazing! For now, enjoy manually selecting your dream car."
+            ];
+            
+            // Select a random quote
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            
+            // Display the alert
+            alert(randomQuote);
+          }
+        </script>
       </form>
     </section>
 
@@ -148,7 +183,7 @@
           incredible rate!
         </p>
         <div class="deals__tabs">
-          <button class="btn active" data-id="Tata">Tata Motors</button>
+          <button class="btn" data-id="Tata">Tata Motors</button>
           <button class="btn" data-id="Hyundai">Hyundai</button>
           <button class="btn" data-id="Mahindra">Mahindra</button>
           <button class="btn" data-id="Toyota">Totyta</button>
@@ -157,7 +192,7 @@
         </div>
 
         <!-- Tata cars -->
-        <div id="Tata" class="tab__content active">
+        <div id="Tata" class="tab__content">
           <div class="deals__card">
             <img src="https://imgd.aeplcdn.com/664x374/n/cw/ec/141867/nexon-exterior-right-front-three-quarter-71.jpeg?isig=0&q=80" alt="deals" />
             <div class="deals__rating">
