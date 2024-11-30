@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <title>Manage Cars</title>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="index.html" class="brand">
+            <i class='bx bxs-car'></i>
+            <span class="text">Car Rental</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="index.html">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="manage-cars.html">
+                    <i class='bx bxs-car'></i>
+                    <span class="text">Manage Cars</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bxs-calendar'></i>
+                    <span class="text">Bookings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bxs-user'></i>
+                    <span class="text">Customers</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class='bx bxs-history'></i>
+                    <span class="text">Rental History</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog'></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle'></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+     
+    
+    
+         
+   
+
+    <!-- CONTENT
+    <section id="content">
+        <nav>
+            <i class='bx bx-menu'></i>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+        </nav>
+
+        <main>
+          
+
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Manage Cars</h3>
+                        <i class='bx bx-search' ></i>
+                        <i class='bx bx-filter' ></i>
+                    </div>
+                    <table class="list" id="car-list">
+                        <thead>
+                            <tr>
+                            <th>Car Name</th>
+                            <th>Pickup Date</th>
+                            <th>Return Date</th>
+                            <th>Total Price</th>
+                            <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Toyota Corolla</td>
+                                <td>2023</td>
+                                <td>$50/day</td>
+                                <td>Available</td>
+                                <td>
+                                    <button class="edit">Edit</button>
+                                    <button class="delete">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                </div>
+               
+            </div>
+
+
+
+           
+        </main>
+    </section> -->
+    <!-- CONTENT -->
+
+
+    <section id="content">
+        <nav>
+            <i class='bx bx-menu'></i>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+        </nav>
+    
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Dashboard</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Dashboard</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right' ></i></li>
+                        <li>
+                            <a class="active" href="#">Home</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#" class="btn-download" id="downloadBtn">
+                    <i class='bx bxs-cloud-download'></i>
+                    <span class="text">Download Report</span>
+                </a>
+            </div>
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Manage Cars</h3>
+                        <i class='bx bx-search'></i>
+                        <i class='bx bx-filter'></i>
+                    </div>
+                    
+                    
+                    <!-- Add Car Form -->
+                    <form id="add-car-form">
+                        <input type="text" id="car-name" placeholder="Car Name" required>
+                        <input type="date" id="pickup-date" required>
+                        <input type="date" id="return-date" required>
+                        <input type="text" id="price" placeholder="Price" required>
+                        <button type="submit">Add Car</button>
+                    </form>
+    
+                    <!-- Car List Table -->
+                    <table class="list" id="car-list">
+                        <thead>
+                            <tr>
+                                <th>Car Name</th>
+                                <th>Pickup Date</th>
+                                <th>Return Date</th>
+                                <th>Total Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Existing Car Data will go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </section>
+    
+
+    <script src="script.js"></script>
+    <script>
+        // Wait for the DOM to load before initializing the script
+        document.addEventListener("DOMContentLoaded", function() {
+            const carList = document.getElementById("car-list").getElementsByTagName('tbody')[0];
+            const addCarForm = document.getElementById("add-car-form");
+        
+            // Function to handle Create operation
+            function addCar(name, pickupDate, returnDate, price) {
+                const row = carList.insertRow(); // Add a new row to the table
+        
+                const nameCell = row.insertCell(0);
+                const pickupDateCell = row.insertCell(1);
+                const returnDateCell = row.insertCell(2);
+                const priceCell = row.insertCell(3);
+                const actionCell = row.insertCell(4);
+        
+                nameCell.textContent = name;
+                pickupDateCell.textContent = pickupDate;
+                returnDateCell.textContent = returnDate;
+                priceCell.textContent = price;
+        
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.classList.add("edit");
+                editButton.onclick = function() {
+                    editCar(row);
+                };
+        
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.classList.add("delete");
+                deleteButton.onclick = function() {
+                    deleteCar(row);
+                };
+        
+                actionCell.appendChild(editButton);
+                actionCell.appendChild(deleteButton);
+            }
+        
+            // Function to handle Delete operation
+            function deleteCar(row) {
+                carList.deleteRow(row.rowIndex);
+            }
+        
+            // Function to handle Edit operation
+            function editCar(row) {
+                const name = row.cells[0].textContent;
+                const pickupDate = row.cells[1].textContent;
+                const returnDate = row.cells[2].textContent;
+                const price = row.cells[3].textContent;
+        
+                const newName = prompt("Edit car name:", name);
+                const newPickupDate = prompt("Edit pickup date:", pickupDate);
+                const newReturnDate = prompt("Edit return date:", returnDate);
+                const newPrice = prompt("Edit price:", price);
+        
+                // Update the row cells with new values
+                if (newName && newPickupDate && newReturnDate && newPrice) {
+                    row.cells[0].textContent = newName;
+                    row.cells[1].textContent = newPickupDate;
+                    row.cells[2].textContent = newReturnDate;
+                    row.cells[3].textContent = newPrice;
+                }
+            }
+        
+            // Event listener for the "Add Car" button (optional, if you want a form to add new cars)
+            addCarForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+        
+                const name = document.getElementById("car-name").value;
+                const pickupDate = document.getElementById("pickup-date").value;
+                const returnDate = document.getElementById("return-date").value;
+                const price = document.getElementById("price").value;
+        
+                addCar(name, pickupDate, returnDate, price);
+        
+                // Clear form fields after adding
+                addCarForm.reset();
+            });
+        
+            // Sample data for the table (can be replaced with dynamic data later)
+            
+        });</script>
+</body>
+</html>

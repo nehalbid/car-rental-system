@@ -1,0 +1,301 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.product-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.product-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.main-image {
+    width: 100%;
+    height: 400px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.main-image img:hover {
+    transform: scale(1.05);
+}
+
+.thumbnail-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.thumbnail-container img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    cursor: pointer;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+}
+
+.thumbnail-container img:hover {
+    opacity: 0.8;
+}
+
+.thumbnail-container img.active {
+    border: 2px solid #646cff;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.product-header h1 {
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    color: #ffd700;
+}
+
+.review-count {
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.price-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-section h2 {
+    font-size: 2rem;
+    color: #1a1a1a;
+}
+
+.per-day {
+    font-size: 1rem;
+    color: #666;
+}
+
+.status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.available {
+    background: #e6f7e6;
+    color: #2da52d;
+}
+
+.specifications {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 15px;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #444;
+}
+
+.spec-item i {
+    font-size: 1.2rem;
+    color: #646cff;
+}
+
+.description {
+    line-height: 1.8;
+}
+
+.description h3 {
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+
+.booking-section {
+    margin-top: auto;
+}
+
+.date-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.date-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.date-input label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.date-input input {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.total-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1rem 0;
+}
+
+.rent-button {
+    width: 100%;
+    padding: 1rem;
+    background: #646cff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.3s ease;
+}
+
+.rent-button:hover {
+    background: #535bf2;
+}
+
+@media (max-width: 768px) {
+    .product-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .main-image {
+        height: 300px;
+    }
+
+    .specifications {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/*select option css*/
+
+/* Initial styling for the select dropdown and label */
+.options {
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.options label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+    transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+/* Add animation when the select is focused */
+select {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Animating the border and scale on focus */
+select:focus {
+    border-color: #4CAF50;
+    transform: scale(1.05);
+}
+
+/* Option animations */
+option {
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for options */
+option:hover {
+    background-color: #f1f1f1;
+    color: #4CAF50;
+}
+
+/* Animation for the dropdown opening */
+select:focus + .options::before {
+    content: "▲"; /* Change icon when the select is focused */
+    font-size: 20px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #4CAF50;
+}
+
+/* Initial arrow icon when dropdown is not focused */
+.options::before {
+    content: "▼";
+    font-size: 20px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    transition: color 0.3s ease;
+}
