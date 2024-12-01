@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
-      rel="stylesheet" />
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="styles.css" />
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="../styles.css" />
     <title>Web Design Mastery | Car Rental</title>
   </head>
   <body>
@@ -18,8 +20,8 @@
         <div class="nav__header">
           <div class="nav__logo">
             <a href="#" class="logo">
-              <img src="assets/logo-white.png" alt="logo" class="logo-white" />
-              <img src="assets/logo-dark.png" alt="logo" class="logo-dark" />
+              <img src="../assets/logo-white.png" alt="logo" class="logo-white" />
+              <img src="../assets/logo-dark.png" alt="logo" class="logo-dark" />
               <span>WheelsToHire.in</span>
             </a>
           </div>
@@ -35,52 +37,26 @@
           <li><a href="#client">Testimonials</a></li>
         </ul>
         <div class="nav__btns">
-          <div class="dropdown">
-            <button class="btn dropdown-btn" id="account-btn">
-              Account
-            </button>
-            <ul class="dropdown-menu" id="account-menu">
-              <li>
-                <a href="login/user.html" id="profile-link">Profile</a>
-              </li>
-              <li>
-                <a href="login/user.html">Login</a>
-              </li>
-            </ul>
+          <div class="nav__btns">
+            <div class="dropdown">
+              <button class="btn dropdown-btn" id="account-btn">
+                Account
+              </button>
+              <ul class="dropdown-menu" id="account-menu">
+                
+                <li><a href="profile.html">Profile</a></li>
+                <li><a href="../login/user.html">Logout</a></li>
+              </ul>
+            </div>
           </div>
-        </div>
-        
-        <script>
-          // Array of quotes
-          const Pquotes = [
-            "You are not logged in yet. Please sign in first!",
-            "Access denied. Please log in to continue!",
-            "Oops! You need to sign in before viewing your profile.",
-            "Please sign in to access your account details.",
-            "Sign in required to view your profile. Log in now!"
-          ];
-        
-          // Add an event listener to the Profile link
-          const profileLink = document.getElementById("profile-link");
-        
-          profileLink.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent the default link behavior
-        
-            // Pick a random quote
-            const randomQuote = Pquotes[Math.floor(Math.random() * Pquotes.length)];
-            alert(randomQuote);
-        
-            // Redirect to the login page
-            window.location.href = "login/user.html";
-          });
-        </script>
           
-         <!-- <button class="btn" style="color:rgb(22, 20, 20);"><a href="user.html">Account</a></button>-->
-        
+          
+         <!-- <button class="btn" style="color:rgb(22, 20, 20);"><a href="login.html">Account</a></button>-->
+        </div>
       </nav>
       <div class="header__container" id="home">
         <div class="header__image">
-          <img src="assets/header.png" alt="header" />
+          <img src="../assets/header.png" alt="header" />
         </div>
         <div class="header__content">
           <h2>👍 100% Trusted car rental platform in Ranchi</h2>
@@ -141,10 +117,13 @@
           // Set the placeholder value for one day after
           document.getElementById('stop').placeholder = formattedDateTomorrow;
         </script>
-        <button class="btn" onclick="showAlert()">Search <i class="ri-search-line"></i></button>
+        <button class="btn" onclick="showAlert(event)">Search <i class="ri-search-line"></i></button>
 
         <script>
-          function showAlert() {
+          function showAlert(event) {
+            // Prevent the default action (like form submission or navigation)
+            event.preventDefault();
+        
             const quotes = [
               "Be patient as the site is under construction... please select cars manually from the webpage.",
               "Good things take time! Explore the cars manually while we polish up the site.",
@@ -152,14 +131,15 @@
               "Construction in progress! Meanwhile, check out the cars directly on the page.",
               "We’re building something amazing! For now, enjoy manually selecting your dream car."
             ];
-            
+        
             // Select a random quote
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            
+        
             // Display the alert
             alert(randomQuote);
           }
         </script>
+        
       </form>
     </section>
 
@@ -245,13 +225,12 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/tata/tatanexon.html">                   <!-- redirect to details page href="tatanexon.html" -->  
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
-              </a>
+            </a>
             </div>
           </div>
-        
           <div class="deals__card">
             <img src="https://imgd.aeplcdn.com/664x374/ec/BD/f0/10752/img/m/Tata-Sumo-Gold-Right-Front-Three-Quarter-48868_ol.jpg?v=201711021421&q=80" alt="deals" />
             <div class="deals__rating">
@@ -280,13 +259,12 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/tata/tatasumo.html">                   <!-- redirect to details page href="tatasumo.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
             </div>
           </div>
-        
           <div class="deals__card">
             <img src="https://imgd.aeplcdn.com/664x374/n/cw/ec/138895/safari-facelift-exterior-right-front-three-quarter-39.jpeg?isig=0&q=80" alt="deals" />
             <div class="deals__rating">
@@ -315,13 +293,14 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/tata/tatasafari.html">                   <!-- redirect to details page href="tatasafari.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
             </div>
           </div>
         </div>
+
         <!-- Hyundai cars -->
         <div id="Hyundai" class="tab__content">
           <div class="deals__card">
@@ -352,7 +331,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/hyundai/hyundai-i20.html">                   <!-- redirect to details page href="hyundai-i20.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -386,7 +365,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/hyundai/hyundai-verna.html">                   <!-- redirect to details page href="hyundai-verna.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -420,7 +399,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/hyundai/hyundai-alcazar.html">                   <!-- redirect to details page href="hyundai-alcazar.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -458,7 +437,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/mahindra/mahindra-bolero.html">                   <!-- redirect to details page href="mahindra-bolero.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -492,7 +471,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">                
+              <a href="../cars/mahindra/mahindra-3xo.html">                   <!-- redirect to details page href="mahindra-3xo.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -526,8 +505,8 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">                  
-              Rent Now
+              <a href="../cars/mahindra/mahindra-scorpio.html">                   <!-- redirect to details page href="mahindra-scorpio.html" -->
+                Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
             </div>
@@ -564,7 +543,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/toyota/toyota-glanza.html">                   <!-- redirect to details page href="toyota-glanza.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -598,7 +577,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/toyota/toyota-uc.html">                   <!-- redirect to details page href="toyota-uc.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -632,7 +611,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/toyota/toyota-innova.html">                   <!-- redirect to details page href="toyota-innova.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -670,7 +649,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">                   
+              <a href="../cars/honda/honda-amaze.html">                   <!-- redirect to details page href="honda-amaze.html"-->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -704,7 +683,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">                   
+              <a href="../cars/honda/honda-city.html">                   <!-- redirect to details page href="honda-city.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -738,7 +717,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">                   
+              <a href="../cars/honda/honda-elevate.html">                   <!-- redirect to details page href="honda-elevate.html"-->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -776,7 +755,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs1499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/maruti-suzuki/maruti-swift.html">                   <!-- redirect to details page href="maruti-swift.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -810,7 +789,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 1999<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/maruti-suzuki/maruti-gvitara.html">                   <!-- redirect to details page href="maruti-gvitara.html" -->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -844,7 +823,7 @@
             <hr />
             <div class="deals__card__footer">
               <h3>Rs 2499<span>/Per Day</span></h3>
-              <a href="login/user.html" class="rent-now">
+              <a href="../cars/maruti-suzuki/maruti-xl6.html">                   <!-- redirect to details page href="maruti-xl6.html"-->
                 Rent Now
                 <span><i class="ri-arrow-right-line"></i></span>
               </a>
@@ -857,7 +836,7 @@
 
     <section class="choose__container" id="choose">
       <div class="choose__image">
-        <img src="assets/choose.png" alt="choose" />
+        <img src="../assets/choose.png" alt="choose" />
       </div>
       <div class="choose__content">
         <h2 class="section__header">Why choose us</h2>
@@ -918,7 +897,7 @@
 
     <section class="subscribe__container">
       <div class="subscribe__image">
-        <img src="assets/subscribe.png" alt="subscribe" />
+        <img src="../assets/subscribe.png" alt="subscribe" />
       </div>
       <div class="subscribe__content">
         <h2 class="section__header">
@@ -1138,33 +1117,9 @@
         Copyright © 2024 Web Design Mastery. All rights reserved.
       </div>
     </footer>
-     
-    <script>
-      // Array of quotes
-      const quotes = [
-        "You are not logged in yet. Please sign in first!",
-        "Access denied. Please log in to continue!",
-        "Oops! You need to sign in before proceeding.",
-        "Please sign in to book your rental!",
-        "Sign in required to access this feature. Log in now!"
-      ];
-    
-      // Add event listeners to all "Rent Now" buttons
-      document.querySelectorAll(".rent-now").forEach(link => {
-        link.addEventListener("click", function (event) {
-          event.preventDefault(); // Prevent the default link behavior
-    
-          // Show a random alert
-          const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-          alert(randomQuote);
-    
-          // Redirect to the login page
-          window.location.href = "login/user.html";
-        });
-      });
-    </script>
+
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="main.js"></script>
+    <script src="../main.js"></script>
   </body>
 </html>

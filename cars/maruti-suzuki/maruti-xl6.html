@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maruti XL6 - Product Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="details.css">
+</head>
+<body>
+    <main class="product-container">
+        <div class="product-gallery">
+            <div class="main-image">
+                <img id="mainImage" src="https://imgd.aeplcdn.com/664x374/n/cw/ec/115601/2022-xl6-exterior-right-front-three-quarter-12.jpeg?isig=0&q=80" alt="maruti-xl6">
+            </div>
+            <div class="thumbnail-container">
+                <img src="https://imgd.aeplcdn.com/664x374/n/cw/ec/115601/2022-xl6-exterior-right-front-three-quarter-12.jpeg?isig=0&q=80" class="active" onclick="changeImage(this.src)">
+                <img src="https://imgd.aeplcdn.com/664x374/n/cw/ec/115601/2022-xl6-exterior-right-rear-three-quarter-17.jpeg?isig=0&q=80" onclick="changeImage(this.src)">
+                <img src="https://imgd.aeplcdn.com/370x208/n/cw/ec/115601/2022-xl6-exterior-left-front-three-quarter-13.jpeg?isig=0&q=80" onclick="changeImage(this.src)">
+            </div>
+        </div>
+
+        <div class="product-info">
+            <div class="product-header">
+                <h1>Maruti XL6</h1>
+                <div class="rating">
+                    <span><i class="ri-star-line"></i></span>
+                    <span><i class="ri-star-line"></i></span>
+                    <span><i class="ri-star-line"></i></span>
+                    <span><i class="ri-star-line"></i></span>
+                    <span><i class="ri-star-line"></i></span>
+                    <span class="review-count">(0 Reviews)</span>
+                </div>
+            </div>
+
+            <div class="price-section">
+                <h2>Rs2499 <span class="per-day">/Per Day</span></h2>
+                <div class="availability">
+                    <span class="status available">Available</span>
+                </div>
+            </div>
+
+            <div class="specifications">
+                <div class="spec-item">
+                    <i class="ri-group-line"></i>
+                    <span>6 People</span>
+                </div>
+                <div class="spec-item">
+                    <i class="ri-steering-2-line"></i>
+                    <span>Automatic</span>
+                </div>
+                <div class="spec-item">
+                    <i class="ri-speed-up-line"></i>
+                    <span>150km Range</span>
+                </div>
+                <div class="spec-item">
+                    <i class="ri-car-line"></i>
+                    <span>Petrol</span>
+                </div>
+                <div class="spec-item">
+                    <i class="ri-speed-up-line"></i>
+                    <span>Excess Rs15/km</span>
+                </div>
+            </div>
+
+            <div class="description">
+                <h3>Description</h3>
+                <p>Maruti XL6, a 6 seater MUV, ranges from Rs. 13.45 - 17.16 Lakh. It is available in 9 variants, with an engine of 1462 cc and a choice of 2 transmissions: Manual and Automatic. XL6 has an NCAP rating of 3 stars and comes with 4 airbags. Maruti XL6 is available in 10 colours. Users have reported a mileage of 20.27 to 26.32 kmpl for XL6.            </div>
+
+            <div class="booking-section">
+                <div class="date-picker">
+                    <div class="date-input">
+                        <label for="pickup-date">Pickup Date</label>
+                        <input type="date" id="pickup-date">
+                    </div>
+                    <div class="date-input">
+                        <label for="return-date">Return Date</label>
+                        <input type="date" id="return-date">
+                    </div>
+                 </div>
+                <div class="total-price">
+                    Total: <span id="totalPrice">Rs2499</span>
+                </div>
+                <button class="rent-button" onclick="handleRentNow()">
+                    Rent Now
+                    <i class="ri-arrow-right-line"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+    <script src="maruti-xl6.js"></script>
+    
+   
+</body>
+</html>
