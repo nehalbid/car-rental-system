@@ -145,6 +145,10 @@
 
         <script>
           function showAlert() {
+            
+             // Prevent the default action (like form submission or navigation)
+             event.preventDefault();
+        
             const quotes = [
               "Be patient as the site is under construction... please select cars manually from the webpage.",
               "Good things take time! Explore the cars manually while we polish up the site.",
