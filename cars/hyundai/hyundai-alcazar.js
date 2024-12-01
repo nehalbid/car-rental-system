@@ -59,6 +59,6 @@ function handleRentNow() {
     
     // Redirect to the rental form page with query parameters
     const car = "Hyundai Alcazar"; // Car name or model
-    const bookingUrl = `/booking/rentalform.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
+    const bookingUrl = `../../booking/rentalform.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
     window.location.href = bookingUrl;
 }
