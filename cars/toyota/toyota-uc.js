@@ -55,10 +55,10 @@ function handleRentNow() {
     
     // Calculate total price based on selected dates
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
-    const totalPrice = days * 1999;
+    const totalPrice = days * 1999; // Rs 1999 per day for Toyota Urban Cruiser
     
     // Redirect to the rental form page with query parameters
-    const car = "Toyota Urban Crusier"; // Car name or model
+    const car = "Toyota Urban Cruiser"; // Car name or model
     const bookingUrl = `../../booking/rentalform.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
     window.location.href = bookingUrl;
 }

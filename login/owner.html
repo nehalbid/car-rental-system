@@ -7,80 +7,41 @@
 <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
-</head>
-<script type="module">
-  // Import necessary Firebase functions
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
-
-  // Firebase configuration
-  const firebaseConfig = {
-  apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
-  authDomain: "car-rental-system-27b86.firebaseapp.com",
-  projectId: "car-rental-system-27b86",
-  storageBucket: "car-rental-system-27b86.firebasestorage.app",
-  messagingSenderId: "285344536169",
-  appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
-  measurementId: "G-470VBKVXS0"
-};
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // Signup Form Submission
-  document.getElementById('signup-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const email = e.target.email.value;
-    const password = e.target.pswd.value;
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Set the role as "vehicleOwner" in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        role: "vehicleOwner",
-        email: email,
-      });
-
-      alert('Vehicle Owner registered successfully! You may log in now.');
-    } catch (error) {
-      alert('Registration failed: ' + error.message);
+  <style>
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
     }
-  });
 
-  // Login Form Submission
-  document.getElementById('login-form').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    const email = e.target.email.value;
-    const password = e.target.pswd.value;
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Get the user's role from Firestore
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-
-      if (userDoc.exists() && userDoc.data().role === "vehicleOwner") {
-        alert('Login successful! Redirecting to Vehicle Owner Dashboard...');
-        window.location.href = "/ownerdashboard/ownerdashboard.html"; // Redirect to Vehicle Owner Dashboard
-      } else {
-        alert('Access denied: You are not a Vehicle Owner.');
-        await auth.signOut(); // Log out the user if not a Vehicle Owner
-      }
-    } catch (error) {
-      alert('Login failed: ' + error.message);
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
     }
-  });
 
-  </script>
-<style>
+    .loading-text {
+      color: white;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 	body{
 	margin: 0;
 	padding: 0;
@@ -212,8 +173,123 @@ button:hover{
 	transform: scale(.6);
 }
 
+.progress-text {
+        text-align: center;
+        color: #573b8a;
+        font-size: 25px;
+        margin-top: 100px;
+        transition: opacity 0.2s ease-in-out;
+    }
 </style>
+</head>
+<script type="module">
+  // Import necessary Firebase functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, serverTimestamp, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+  // Function to show loading overlay
+  function showLoading() {
+    document.querySelector('.loading-overlay').style.display = 'flex';
+  }
+
+  // Function to hide loading overlay
+  function hideLoading() {
+    document.querySelector('.loading-overlay').style.display = 'none';
+  }
+
+  // Firebase configuration
+  const firebaseConfig = {
+  apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+  authDomain: "car-rental-system-27b86.firebaseapp.com",
+  projectId: "car-rental-system-27b86",
+  storageBucket: "car-rental-system-27b86.firebasestorage.app",
+  messagingSenderId: "285344536169",
+  appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
+  measurementId: "G-470VBKVXS0"
+};
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  async function getNextOwnerId() {
+    const q = query(collection(db, 'owners'), orderBy('ownerId', 'desc'), limit(1));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.docs.length > 0) {
+      const lastOwnerId = querySnapshot.docs[0].data().ownerId;
+      return parseInt(lastOwnerId.substring(3)) + 1;
+    } else {
+      return 1;
+    }
+  }
+
+  // Signup Form Submission
+  document.getElementById('signup-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    
+    try {
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Generate simple owner ID (OWN + last 4 digits)
+      let counter = await getNextOwnerId();
+      const ownerId = `OWN${String(counter).padStart(4, '0')}`;
+      
+      // Store additional owner info in Firestore
+      await setDoc(doc(db, 'owners', user.uid), {
+        email: email,
+        ownerId: ownerId,
+        createdAt: serverTimestamp()
+      });
+
+      alert('Owner account created successfully!');
+      window.location.href = '../ownerdashboard/ownerdashboard.html';
+    } catch (error) {
+      console.error('Error during signup:', error);
+      alert(error.message);
+    }
+  });
+
+  // Login Form Submission
+  document.getElementById('login-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    showLoading(); // Show loading overlay when login starts
+    
+    const email = e.target.email.value;
+    const password = e.target.pswd.value;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Get the owner document from Firestore
+      const ownerDoc = await getDoc(doc(db, "owners", user.uid));
+
+      if (ownerDoc.exists()) {
+        window.location.href = "../ownerdashboard/ownerdashboard.html"; // Redirect to Vehicle Owner Dashboard
+      } else {
+        hideLoading(); // Hide loading overlay before showing error
+        alert('Access denied: You are not registered as a Vehicle Owner.');
+        await auth.signOut(); // Log out the user if not a Vehicle Owner
+      }
+    } catch (error) {
+      hideLoading(); // Hide loading overlay before showing error
+      alert('Login failed: ' + error.message);
+    }
+  });
+
+  </script>
 <body>
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Login successful! Redirecting...</div>
+  </div>
 	<div class="toggle-container">
 	  <span class="toggle-label">User</span>
 	  <input type="checkbox" id="toggle" onchange="redirectPage()" checked>
@@ -235,10 +311,10 @@ button:hover{
 	  <div class="signup">
 		<form id="signup-form">
 		  <label for="chk" aria-hidden="true">Register</label>
-		  <input type="text" name="txt" placeholder="User name" required="">
-		  <input type="email" name="email" placeholder="Email" required="">
-		  <input type="password" name="pswd" placeholder="Password" required="">
-		  <button type="submit">Sign up</button>
+		  <div id="progress-text" class="progress-text">WORK IN PROGRESS</div>
+		  <!--  <input type="email" id="signup-email" placeholder="Email" required="">
+		  <input type="password" id="signup-password" placeholder="Password" required="">
+		  <button type="submit">Signup</button> -->
 		</form>
 	  </div>
 	</div>
@@ -255,13 +331,30 @@ button:hover{
       }, 100);
     }
   </script>
+  <script>
+      let messages = [
+        "🚧 WORK IN PROGRESS 🚧",
+        "👨‍🍳 Cooking Something Special! 🔥",
+        "🚀 Ready for Takeoff Soon! ✨",
+        "🎨 Designing Your Experience... 💫",
+        "⚡ Supercharging the System 🔋",
+        "✨ Magic in the Making! 🎩",
+        "🔧 Fine-tuning the Engine... ⚙️",
+        "🎁 Loading Awesome Features... 🌟"
+      ];
+  
+      let currentIndex = 0;
+      const progressText = document.getElementById('progress-text');
+  
+      document.querySelector('.signup label').addEventListener('click', function() {
+        currentIndex = (currentIndex + 1) % messages.length;
+        progressText.style.opacity = '0';
+        
+        setTimeout(() => {
+          progressText.innerText = messages[currentIndex];
+          progressText.style.opacity = '1';
+        }, 200);
+      });
+  </script>
 	  </body>
-  </html>  
-  
-  
-  
-  
-  
-  
-  
-  
+  </html>

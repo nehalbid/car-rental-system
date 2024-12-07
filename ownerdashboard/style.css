@@ -519,11 +519,71 @@ body {
 /* CONTENT */
 
 
+/* Status Styles */
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: inline-block;
+}
 
+.status.ongoing {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
 
+.status.completed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
 
+.status.cancelled {
+    background-color: #ffebee;
+    color: #c62828;
+}
 
+.status.pending {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
 
+/* Button styles */
+.table-data button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Hover effect */
+.table-data button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
+
+/* Delete button styling */
+.table-data button.delete {
+    background-color: #db504a;
+}
+
+.table-data button.delete:hover {
+    background-color: #a8342f;
+}
+
+/* Edit button styling */
+.table-data button.edit {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.table-data button.edit:hover {
+    background-color: #e0a800;
+}
 
 
 @media screen and (max-width: 768px) {
@@ -590,40 +650,3 @@ body {
 		min-width: 420px;
 	}
 }
-
-/* Button styles */
-.table-data button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-/* Hover effect */
-.table-data button:hover {
-    background-color: #0056b3;
-    transform: scale(1.1);
-}
-
-/* Delete button styling */
-.table-data button.delete {
-    background-color: #db504a;
-}
-
-.table-data button.delete:hover {
-    background-color: #a8342f;
-}
-
-/* Edit button styling */
-.table-data button.edit {
-    background-color: #ffc107;
-    color: #333;
-}
-
-.table-data button.edit:hover {
-    background-color: #e0a800;
-}
-

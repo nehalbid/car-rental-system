@@ -9,47 +9,69 @@
   <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
   
   <script type="module">
-    // Firebase Configuration
+    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
+    // Firebase configuration
     const firebaseConfig = {
-  apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
-  authDomain: "car-rental-system-27b86.firebaseapp.com",
-  projectId: "car-rental-system-27b86",
-  storageBucket: "car-rental-system-27b86.firebasestorage.app",
-  messagingSenderId: "285344536169",
-  appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
-  measurementId: "G-470VBKVXS0"
-};
+      apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+      authDomain: "car-rental-system-27b86.firebaseapp.com",
+      projectId: "car-rental-system-27b86",
+      storageBucket: "car-rental-system-27b86.firebasestorage.app",
+      messagingSenderId: "285344536169",
+      appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
+      measurementId: "G-470VBKVXS0"
+    };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Function to show loading overlay
+    function showLoading() {
+      document.querySelector('.loading-overlay').style.display = 'flex';
+    }
+
+    // Function to hide loading overlay
+    function hideLoading() {
+      document.querySelector('.loading-overlay').style.display = 'none';
+    }
+
     // Handle Signup Form Submission
     document.querySelector('.signup form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const email = e.target.email.value;
-      const password = e.target.pswd.value;
+      const email = e.target.querySelector('[type="email"]').value;
+      const password = e.target.querySelector('[type="password"]').value;
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Save user with "user" role in Firestore
-        await setDoc(doc(db, "users", user.uid), {
+        // Generate shorter customer ID using only first 4 chars of UID and last 4 digits of timestamp
+        const timestamp = Date.now().toString().slice(-4);
+        const customerId = `C${user.uid.slice(0, 4)}${timestamp}`;
+
+        // Save user data
+        await setDoc(doc(db, 'customers', user.uid), {
           email: email,
-          role: "user",
+          customerId: customerId,
+          createdAt: serverTimestamp(),
+          role: 'customer'
         });
 
-        alert('User registered successfully! You can log in now.');
-        e.target.reset();
+        // Sign out the user after signup
+        await signOut(auth);
+        
+        alert('Account created successfully! Please login to continue.');
+        // Switch to login form
+        document.getElementById('chk').checked = false;
       } catch (error) {
-        alert('Error during registration: ' + error.message);
+        console.error('Error:', error);
+        alert(error.message);
       }
     });
 
@@ -57,183 +79,231 @@
     document.querySelector('.login form').addEventListener('submit', async function (e) {
       e.preventDefault();
 
-      const email = e.target.email.value;
-      const password = e.target.pswd.value;
+      const email = e.target.querySelector('[type="email"]').value;
+      const password = e.target.querySelector('[type="password"]').value;
 
       try {
+        // Sign in user
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Validate user role from Firestore
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists() && userDoc.data().role === "user") {
-          alert('Login successful! Redirecting to User dashboard...')
-
-        // Set a timer to redirect after 1 second (1000 milliseconds)
-      setTimeout(function() {
-      window.location.href = "../userdashboard/userdashboard.html";
-      }, 500);
-         
-        } else {
-          alert('Access denied: You are not authorized as a user.');
-          await auth.signOut();
+        // Check if user exists in customers collection
+        const customerDoc = await getDoc(doc(db, 'customers', user.uid));
+        
+        if (!customerDoc.exists()) {
+          await signOut(auth);
+          alert('Account not found. Please sign up first.');
+          return;
         }
+
+        const customerData = customerDoc.data();
+        if (customerData.role !== 'customer') {
+          await signOut(auth);
+          alert('Invalid user type. Please use the correct login page.');
+          return;
+        }
+
+        // Show loading overlay
+        showLoading();
+
+        // Redirect after 1 second
+        setTimeout(() => {
+          window.location.href = '../userdashboard/userdashboard.html';
+        }, 1000);
       } catch (error) {
-        alert('Login failed: ' + error.message);
+        hideLoading();
+        console.error('Login error:', error);
+        alert(error.message);
       }
     });
   </script>
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Jost', sans-serif;
-    background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-  }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Jost', sans-serif;
+      background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    }
 
-  .main {
-    width: 90%;
-    max-width: 350px;
-    height: 500px;
-    background: red;
-    overflow: hidden;
-    background: url("https://img.freepik.com/premium-vector/abstract-realistic-technology-particle-background_23-2148414765.jpg?w=740") no-repeat center / cover;
-    border-radius: 10px;
-    box-shadow: 5px 20px 50px #000;
-  }
+    .main {
+      width: 90%;
+      max-width: 350px;
+      height: 500px;
+      background: red;
+      overflow: hidden;
+      background: url("https://img.freepik.com/premium-vector/abstract-realistic-technology-particle-background_23-2148414765.jpg?w=740") no-repeat center / cover;
+      border-radius: 10px;
+      box-shadow: 5px 20px 50px #000;
+    }
 
-  #chk {
-    display: none;
-  }
+    #chk {
+      display: none;
+    }
 
-  .toggle-container {
-    position: fixed; 
-    top: 45px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    .toggle-container {
+      position: fixed; 
+      top: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-  .toggle-label {
-    font-size: 18px;
-    color: blanchedalmond;
-    font-weight: bolder;
-  }
+    .toggle-label {
+      font-size: 18px;
+      color: blanchedalmond;
+      font-weight: bolder;
+    }
 
-  .toggle-switch {
-    position: relative;
-    width: 50px;
-    height: 25px;
-    background: #ccc;
-    border-radius: 15px;
-    cursor: pointer;
-  }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 25px;
+      background: #ccc;
+      border-radius: 15px;
+      cursor: pointer;
+    }
 
-  .toggle-switch::before {
-    content: "";
-    position: absolute;
-    width: 23px;
-    height: 23px;
-    background: #fff;
-    border-radius: 50%;
-    top: 1px;
-    left: 1px;
-    transition: .3s;
-  }
+    .toggle-switch::before {
+      content: "";
+      position: absolute;
+      width: 23px;
+      height: 23px;
+      background: #fff;
+      border-radius: 50%;
+      top: 1px;
+      left: 1px;
+      transition: .3s;
+    }
 
-  input[type="checkbox"] {
-    display: none;
-  }
+    input[type="checkbox"] {
+      display: none;
+    }
 
-  input[type="checkbox"]:checked + .toggle-switch::before {
-    left: 26px;
-    background: #573b8a;
-  }
+    input[type="checkbox"]:checked + .toggle-switch::before {
+      left: 26px;
+      background: #573b8a;
+    }
 
-  .login {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+    .login {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
 
-  label {
-    color: #fff;
-    font-size: 2.3em;
-    justify-content: center;
-    display: flex;
-    margin: 60px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .5s ease-in-out;
-  }
+    label {
+      color: #fff;
+      font-size: 2.3em;
+      justify-content: center;
+      display: flex;
+      margin: 60px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .5s ease-in-out;
+    }
 
-  input {
-    width: 60%;
-    height: 20px;
-    background: #e0dede;
-    justify-content: center;
-    display: flex;
-    margin: 20px auto;
-    padding: 10px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-  }
+    input {
+      width: 60%;
+      height: 20px;
+      background: #e0dede;
+      justify-content: center;
+      display: flex;
+      margin: 20px auto;
+      padding: 10px;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+    }
 
-  button {
-    width: 60%;
-    height: 40px;
-    margin: 10px auto;
-    justify-content: center;
-    display: block;
-    color: #fff;
-    background: #573b8a;
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 20px;
-    outline: none;
-    border: none;
-    border-radius: 5px;
-    transition: .2s ease-in;
-    cursor: pointer;
-  }
+    button {
+      width: 60%;
+      height: 40px;
+      margin: 10px auto;
+      justify-content: center;
+      display: block;
+      color: #fff;
+      background: #573b8a;
+      font-size: 1em;
+      font-weight: bold;
+      margin-top: 20px;
+      outline: none;
+      border: none;
+      border-radius: 5px;
+      transition: .2s ease-in;
+      cursor: pointer;
+    }
 
-  button:hover {
-    background: #6d44b8;
-  }
+    button:hover {
+      background: #6d44b8;
+    }
 
-  .signup {
-    height: 460px;
-    background: #eee;
-    border-radius: 60% / 10%;
-    transform: translateY(-180px);
-    transition: .8s ease-in-out;
-  }
+    .signup {
+      height: 460px;
+      background: #eee;
+      border-radius: 60% / 10%;
+      transform: translateY(-180px);
+      transition: .8s ease-in-out;
+    }
 
-  .signup label {
-    color: #573b8a;
-    transform: scale(.6);
-  }
+    .signup label {
+      color: #573b8a;
+      transform: scale(.6);
+    }
 
-  #chk:checked ~ .signup {
-    transform: translateY(-500px);
-  }
+    #chk:checked ~ .signup {
+      transform: translateY(-500px);
+    }
 
-  #chk:checked ~ .signup label {
-    transform: scale(1);
-  }
+    #chk:checked ~ .signup label {
+      transform: scale(1);
+    }
 
-  #chk:checked ~ .login label {
-    transform: scale(.6);
-  }
-</style>
+    #chk:checked ~ .login label {
+      transform: scale(.6);
+    }
+
+    /* Add loading overlay styles */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      color: white;
+      font-size: 18px;
+      font-family: Arial, sans-serif;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
   <div class="toggle-container">
@@ -241,6 +311,11 @@
     <input type="checkbox" id="toggle" onchange="redirectPage()">
     <label for="toggle" class="toggle-switch"></label>
     <span class="toggle-label">Car Owner</span>
+  </div>
+
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Login successful! Redirecting...</div>
   </div>
 
   <div class="main">

@@ -57,8 +57,13 @@ function handleRentNow() {
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
     const totalPrice = days * 1999;
     
-    // Redirect to the rental form page with query parameters
-    const car = "Mahindra XUV 3XO"; // Car name or model
-    const bookingUrl = `../../booking/rentalform.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
+    // Save customer details to localStorage (these should be collected from a form)
+    localStorage.setItem('customerName', 'John Doe'); // Replace with actual form data
+    localStorage.setItem('customerEmail', 'john@example.com'); // Replace with actual form data
+    localStorage.setItem('customerPhone', '1234567890'); // Replace with actual form data
+    
+    // Redirect to the booking slip page with query parameters
+    const car = "Mahindra 3XO"; // Car name or model
+    const bookingUrl = `../../booking/booking-slip.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
     window.location.href = bookingUrl;
 }

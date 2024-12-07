@@ -3,47 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental Form</title>
+    <title>Car Rental Form - WheelsToHire.in</title>
     <style>
-        /* General body styling */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f7f7f7;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
 
         .form-container {
-            background: #fff;
-            padding: 30px;
-            border: 8px solid #2c3e50;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
             width: 100%;
-            max-width: 500px;
-            text-align: left;
+            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        /* Logo and title styling */
-        .logo-container {
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 20px;
+            position: relative;
         }
 
-        .logo-container img {
-            width: 120px; /* Adjust the width as needed */
+        .logo {
+            width: 80px;
             height: auto;
             margin-bottom: 10px;
         }
 
-        .logo-container h1 {
-            font-size: 24px;
-            color: #2c3e50;
-            margin: 0;
+        .header h1 {
+            font-size: 28px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .form-content {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
         }
 
         .form-group {
@@ -53,9 +68,9 @@
         label {
             display: block;
             font-size: 16px;
-            font-weight: 700;
             color: #2c3e50;
             margin-bottom: 8px;
+            font-weight: 500;
         }
 
         input, select {
@@ -63,124 +78,208 @@
             padding: 12px;
             font-size: 16px;
             border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
+            border-radius: 8px;
+            background-color: #fff;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #2c3e50;
-            box-shadow: 0 0 5px rgba(44, 62, 80, 0.5);
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            color: #fff;
+            padding: 15px;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         button:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
 
-        /* Responsive styling */
-        @media (max-width: 576px) {
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
             .form-container {
+                margin: 10px;
+            }
+
+            .form-content {
                 padding: 20px;
             }
 
-            h1 {
-                font-size: 24px;
+            .form-section {
+                padding: 15px;
             }
 
             button {
+                padding: 12px;
                 font-size: 16px;
             }
         }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
 </head>
 <body>
     <div class="form-container">
-        <!-- Logo and title -->
-        <div class="logo-container">
-            <img src="../assets/logo-dark.png" alt="Logo"> <!-- Replace with your logo's URL -->
+        <div class="header">
+            <img src="../assets/logo-white.png" alt="WheelsToHire.in Logo" class="logo">
             <h1>Car Rental Form</h1>
         </div>
 
-        <!-- Form -->
-        <form id="rentalForm">
-            <div class="form-group">
-                <label for="name">Full Name:</label>
-                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-            </div>
-            <div class="form-group">
-                <label for="contactNumber">Contact Number:</label>
-                <input type="tel" id="contactNumber" name="contactNumber" placeholder="Example: 95XXXXXX31" pattern="[0-9]{10}" required>
-            </div>
-            <div class="form-group">
-                <label for="drivingLicense">Driving License:   "Will be verified manually during pickup"</label>
-                <input type="text" id="drivingLicense" name="drivingLicense" placeholder="Enter your driving license No." required>
-            </div>
-            <div class="form-group">
-                <label for="aadharCard">Aadhar Card:   "Will be verified manually during pickup"</label>
-                <input type="text" id="aadharCard" name="aadharCard" placeholder="Enter your 12 Digits Aadhar No." pattern="[0-9]{12}" required>
-            </div>
-            <div class="form-group">
-                <label for="pickupLocation">Car Pickup:</label>
-                <select id="pickupLocation" name="pickupLocation" required>
-                    <option value="" disabled selected>Select a location</option>
-                    <option value="Lalpur">Lalpur</option>
-                    <option value="Namkum">Namkum</option>
-                    <option value="Kanke">Kanke</option>
-                    <option value="Ratu">Ratu</option>
-                    <option value="Dhurwa">Dhurwa</option>
-                </select>
-            </div>
-            <button type="submit">Submit</button>
-        </form>
+        <div class="form-content">
+            <form id="rentalForm">
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" placeholder="Example: 95XXXXXX31" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="drivingLicense">Driving License Number</label>
+                        <input type="text" id="drivingLicense" name="drivingLicense" placeholder="Example: JH01 2023XXXXX03"  required>
+                        <div class="note">Will be verified manually during pickup</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="aadharCard">Aadhar Card Number</label>
+                        <input type="text" id="aadharCard" name="aadharCard" placeholder="Example: 1234-XXXX-4321" pattern="[0-9]{12}" required>
+                        <div class="note">Will be verified manually during pickup</div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="pickupLocation">Car Pickup Location</label>
+                        <select id="pickupLocation" name="pickupLocation" required>
+                            <option value="" disabled selected>Select a location</option>
+                            <option value="Lalpur">Lalpur</option>
+                            <option value="Namkum">Namkum</option>
+                            <option value="Kanke">Kanke</option>
+                            <option value="Ratu">Ratu</option>
+                            <option value="Dhurwa">Dhurwa</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit">Submit Booking</button>
+            </form>
+        </div>
     </div>
 
-    <script>
-        document.getElementById('rentalForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, query, where, getDocs, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js';
 
-            // Get URL parameters
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+            authDomain: "car-rental-system-27b86.firebaseapp.com",
+            projectId: "car-rental-system-27b86",
+            storageBucket: "car-rental-system-27b86.appspot.com",
+            messagingSenderId: "960770900463",
+            appId: "1:960770900463:web:2e1789cac9b4e45ee11109"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = '../login/login.html';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('rentalForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
             const urlParams = new URLSearchParams(window.location.search);
-            const car = urlParams.get('car');
-            const pickupDate = urlParams.get('pickupDate');
-            const returnDate = urlParams.get('returnDate');
-            const totalPrice = urlParams.get('totalPrice');
+            const carName = urlParams.get('car');
 
-            // Collect form data
-            const formData = new FormData(e.target);
-            const data = {
-                car: car,
-                pickupDate: pickupDate,
-                returnDate: returnDate,
-                totalPrice: totalPrice,
-                name: formData.get('name'),
-                contactNumber: formData.get('contactNumber'),
-                drivingLicense: formData.get('drivingLicense'),
-                aadharCard: formData.get('aadharCard'),
-                CarPickup: formData.get('pickupLocation')
-            };
+            try {
+                // Create booking data object
+                const bookingData = {
+                    car: carName,
+                    pickupDate: urlParams.get('pickupDate'),
+                    returnDate: urlParams.get('returnDate'),
+                    totalPrice: urlParams.get('totalPrice'),
+                    name: formData.get('name'),
+                    contactNumber: formData.get('contactNumber'),
+                    CarPickup: formData.get('pickupLocation'),
+                    drivingLicense: formData.get('drivingLicense'),
+                    aadharCard: formData.get('aadharCard'),
+                    bookingDate: new Date().toISOString()
+                };
 
-            // Save data to LocalStorage
-            let savedData = JSON.parse(localStorage.getItem('rentalData')) || [];
-            savedData.push(data);
-            localStorage.setItem('rentalData', JSON.stringify(savedData));
+                // Generate simple booking ID
+                const date = new Date();
+                const year = date.getFullYear().toString().slice(-2);
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                const simpleBookingId = `BK${year}${month}${day}${random}`;
+                
+                bookingData.bookingId = simpleBookingId;
 
-            // Redirect to booking slip with all parameters
-            const bookingSlipUrl = `booking-slip.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent(totalPrice)}`;
-            window.location.href = bookingSlipUrl;
+                // Save to Firebase
+                const bookingRef = await addDoc(collection(db, "bookings"), {
+                    ...bookingData,
+                    bookingId: simpleBookingId
+                });
+                console.log("Booking saved with ID: ", simpleBookingId);
+
+                // Create URL parameters
+                const params = new URLSearchParams({
+                    car: urlParams.get('carName') || carName,
+                    pickupDate: bookingData.pickupDate,
+                    returnDate: bookingData.returnDate,
+                    totalPrice: urlParams.get('totalPrice').replace('Rs ', ''),
+                    customerName: bookingData.name,
+                    customerPhone: bookingData.contactNumber,
+                    location: bookingData.CarPickup,
+                    drivingLicense: bookingData.drivingLicense,
+                    aadharCard: bookingData.aadharCard,
+                    bookingDate: bookingData.bookingDate,
+                    bookingId: simpleBookingId
+                });
+
+                // Log data for debugging
+                console.log("Sending data:", Object.fromEntries(params));
+
+                // Redirect to booking slip
+                window.location.href = 'booking-slip.html?' + params.toString();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing booking. Please try again.');
+            }
         });
     </script>
 </body>

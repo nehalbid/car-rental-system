@@ -53,9 +53,9 @@ function handleRentNow() {
         return;
     }
     
-    // Calculate total price based on selected dates // for the slip
+    // Calculate total price based on selected dates
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
-    const totalPrice = days * 1499;
+    const totalPrice = days * 1499; // Rs 1499 per day for Toyota Glanza
     
     // Redirect to the rental form page with query parameters
     const car = "Toyota Glanza"; // Car name or model
