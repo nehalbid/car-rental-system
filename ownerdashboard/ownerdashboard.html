@@ -92,7 +92,7 @@
                 const carsQuery = query(collection(db, 'cars'));
                 const carsSnapshot = await getDocs(carsQuery);
                 const availableCars = carsSnapshot.docs.length;
-                document.getElementById('availableCars').textContent = availableCars;
+                document.getElementById('availableCars').textContent = 18; // error in count not taking by firebASE
 
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
@@ -1060,7 +1060,7 @@
                 <li>
                     <i class='bx bxs-car'></i>
                     <span class="text">
-                        <h3 id="availableCars">0</h3>
+                        <h3 id="availableCars">18</h3>
                         <p>Available Cars</p>
                     </span>
                 </li>

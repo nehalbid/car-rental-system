@@ -55,7 +55,7 @@ function handleRentNow() {
     
     // Calculate total price based on selected dates
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
-    const totalPrice = days * 2499; // Rs 2499 per day for Hyundai Alcazar
+    const totalPrice = days * 2499;
     
     // Redirect to the rental form page with query parameters
     const car = "Hyundai Alcazar"; // Car name or model

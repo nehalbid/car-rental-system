@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - Car Rental Admin</title>
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .table-data {
+            padding: 24px;
+        }
+
+        .order {
+            background: #fff;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .order table th {
+            padding: 12px;
+            text-align: left;
+            background: #f6f6f6;
+            color: #333;
+        }
+
+        .order table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            min-width: 100px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .status.completed {
+            background: var(--blue);
+            color: var(--light);
+        }
+
+        .status.pending {
+            background: var(--orange);
+            color: var(--light);
+        }
+
+        .status.cancelled {
+            background: var(--red);
+            color: var(--light);
+        }
+
+        .status.ongoing {
+            background: var(--orange);
+            color: var(--light);
+        }
+
+        .view-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 4px;
+            font-size: 14px;
+        }
+
+        .view-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .view-btn:hover {
+            background-color: #45a049;
+        }
+        .view-btn i {
+            font-size: 16px;
+        }
+
+        .delete-btn {
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            background-color: #ff0000 !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s !important;
+            text-decoration: none !important;
+        }
+
+        .delete-btn:hover {
+            background-color: #cc0000 !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .delete-btn i {
+            font-size: 16px !important;
+            color: white !important;
+        }
+
+        /* Fix theme toggle button */
+        .theme-toggle {
+            cursor: pointer !important;
+            font-size: 20px !important;
+        }
+
+        .dark .theme-toggle {
+            color: #ffffff !important;
+        }
+        
+        .theme-toggle i {
+            line-height: normal !important;
+        }
+
+        /* Notification styles */
+        .notification-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: inherit;
+        }
+
+        .notification i {
+            font-size: 20px;
+        }
+
+        .notification .num {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--light);
+            background: var(--red);
+            color: var(--light);
+            font-weight: 700;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .notification-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        #markAllRead {
+            background: none;
+            border: none;
+            color: #3C91E6;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .notification-list {
+            padding: 0;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .notification-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .notification-item.unread {
+            background-color: #f0f7ff;
+        }
+
+        .notification-content p {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+
+        .notification-content .time {
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* Add a small arrow to the dropdown */
+        .notification-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid white;
+        }
+
+        /* Dark mode styles */
+        body.dark .notification-dropdown {
+            background: #2d2d2d;
+            border: 1px solid #3d3d3d;
+        }
+
+        body.dark .notification-header {
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        body.dark .notification-item {
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+        body.dark .notification-item:hover {
+            background-color: #3d3d3d;
+        }
+
+        body.dark .notification-item.unread {
+            background-color: #1a1a1a;
+        }
+
+        body.dark .notification-content p {
+            color: #fff;
+        }
+
+        body.dark .notification-content .time {
+            color: #888;
+        }
+
+        body.dark #markAllRead {
+            color: #3C91E6;
+        }
+
+        body.dark .notification-dropdown::before {
+            border-bottom-color: #2d2d2d;
+        }
+
+        .view-btn, .delete-btn {
+            padding: 6px 12px !important;
+            font-size: 13px !important;
+            margin: 0 4px !important;
+        }
+
+        .view-btn i, .delete-btn i {
+            font-size: 14px !important;
+            margin-right: 4px !important;
+        }
+
+        .table-data .order {
+            gap: 6px !important;
+        }
+
+        /* Profile avatar styles */
+        .profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .profile i {
+            transition: color 0.3s ease;
+        }
+
+        .profile:hover i {
+            color: #3b3b3b !important;
+        }
+
+        /* Update dark mode styles */
+        body.dark .profile i {
+            color: #ffffff !important;
+        }
+
+        body.dark .profile:hover i {
+            color: #cccccc !important;
+        }
+
+        /* Avatar showcase styles */
+        .avatar-showcase {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 400px;
+        }
+
+        .avatar-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .avatar-option:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .avatar-option .emoji {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .avatar-option p {
+            font-size: 12px;
+            text-align: center;
+            margin: 0;
+            color: #666;
+        }
+
+        body.dark .avatar-showcase {
+            background: #333;
+            color: white;
+        }
+
+        body.dark .avatar-option {
+            background: #444;
+        }
+
+        body.dark .avatar-option:hover {
+            background: #555;
+        }
+
+        body.dark .avatar-option p {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-car'></i>
+            <span class="text">Car Rental</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="admin.html">
+                    <i class='bx bxs-dashboard' ></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+    
+            <li>
+                <a href="bookings.html">
+                    <i class='bx bxs-calendar' ></i>
+                    <span class="text">Bookings</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="customers.html">
+                    <i class='bx bxs-user' ></i>
+                    <span class="text">Customers</span>
+                </a>
+            </li>
+            <li>
+                <a href="carowner.html">
+                    <i class='bx bxs-user-check' ></i>
+                    <span class="text">Car Owners</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="profile.html">
+                    <i class='bx bxs-cog' ></i>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle' ></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- Avatar Showcase Modal -->
+        <div class="avatar-showcase" id="avatarShowcase" style="display: none;">
+            <div class="avatar-option">
+                <span class="emoji">😊</span>
+                <p>Smile</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">😎</span>
+                <p>Cool</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🤠</span>
+                <p>Cowboy</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🦸‍♂️</span>
+                <p>Superhero</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🧙‍♂️</span>
+                <p>Wizard</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">👨‍💼</span>
+                <p>Business</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🤓</span>
+                <p>Nerd</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🦊</span>
+                <p>Fox</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🐱</span>
+                <p>Cat</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🦁</span>
+                <p>Lion</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🐼</span>
+                <p>Panda</p>
+            </div>
+            <div class="avatar-option">
+                <span class="emoji">🦉</span>
+                <p>Owl</p>
+            </div>
+        </div>
+
+        <nav>
+            <i class='bx bx-menu'></i>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
+                </div>
+            </form>
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode theme-toggle"><i class='bx bx-moon'></i></label>
+            <div class="notification-wrapper">
+                <button class="notification" id="notificationBtn">
+                    <i class='bx bxs-bell'></i>
+                    <span class="num" id="notificationCount">0</span>
+                </button>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <button id="markAllRead">Mark all as read</button>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="profile">
+                <span class="emoji" style="font-size: 2em; cursor: pointer;" onclick="window.location.href='profile.html'">😊</span>
+            </div>
+        </nav>
+
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Customers</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="admin.html">Dashboard</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right'></i></li>
+                        <li>
+                            <a class="active" href="customers.html">Customers</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#" class="btn-download">
+                    <i class='bx bxs-cloud-download'></i>
+                    <span class="text">Download Report</span>
+                </a>
+            </div>
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Customer Details</h3>
+                        <i class='bx bx-search'></i>
+                        <i class='bx bx-filter'></i>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Serial No.</th>
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <!-- MAIN -->
+
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+            import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+                authDomain: "car-rental-system-27b86.firebaseapp.com",
+                projectId: "car-rental-system-27b86",
+                storageBucket: "car-rental-system-27b86.appspot.com",
+                messagingSenderId: "285344536169",
+                appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
+                measurementId: "G-470VBKVXS0"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+        </script>
+
+        <script type="module">
+            // Function to get customer details
+            async function getCustomerDetails() {
+                console.log('Fetching customers details...');
+                const customersSnapshot = await getDocs(collection(db, 'customers'));
+                console.log('Customers snapshot:', customersSnapshot);
+                const customersTableBody = document.getElementById('customerTableBody');
+                customersTableBody.innerHTML = ""; // Clear existing rows
+
+                let serialNo = 1;
+                customersSnapshot.forEach(doc => {
+                    const customers = doc.data();
+                    console.log('Customer data:', customers);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${serialNo++}</td>
+                        <td>${customers.customerId}</td>
+                        <td>${customers.name}</td>
+                        <td>${customers.email}</td>
+                        <td>${customers.phone}</td>
+                    `;
+                    customerTableBody.appendChild(row);
+                });
+            }
+
+            // Fetch customer details on load
+            document.addEventListener('DOMContentLoaded', getCustomerDetails);
+        </script>

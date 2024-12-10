@@ -53,12 +53,12 @@ function handleRentNow() {
         return;
     }
     
-    // Calculate total price based on selected dates
+    // Calculate total price based on selected dates // for the slip
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
-    const totalPrice = days * 1499; // Rs 1499 per day for Hyundai i20
+    const totalPrice = days * 1499;
     
     // Redirect to the rental form page with query parameters
-    const car = "Hyundai i20"; // Car name or model
+    const car = "Hyundai I20"; // Car name or model
     const bookingUrl = `../../booking/rentalform.html?car=${encodeURIComponent(car)}&pickupDate=${encodeURIComponent(pickupDate)}&returnDate=${encodeURIComponent(returnDate)}&totalPrice=${encodeURIComponent('Rs ' + totalPrice)}`;
     window.location.href = bookingUrl;
 }

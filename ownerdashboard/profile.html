@@ -187,28 +187,6 @@
             display: none;
         }
 
-        .alert-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert-message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            min-width: 300px;
-        }
-
         .avatar-showcase {
             position: fixed;
             top: 50%;
@@ -293,7 +271,6 @@
         </div>
 
         <div class="profile-content">
-            <div id="successMessage" class="alert-message success">Profile updated successfully!</div>
             <form id="profileForm">
                 <div class="profile-section">
                     <div class="profile-photo">
@@ -442,6 +419,9 @@
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.style.display = 'none';
+            
             try {
                 const user = auth.currentUser;
                 if (!user) {
@@ -499,20 +479,11 @@
                     document.getElementById('confirmPassword').value = '';
                 }
 
-                // Show success message
-                const successMessage = document.getElementById('successMessage');
-                if (successMessage) {
-                    successMessage.style.display = 'block';
-                    
-                    // Hide success message after 3 seconds
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 3000);
-                }
+                alert('Profile updated successfully!');
             } catch (error) {
                 console.error('Error updating profile:', error);
-                document.getElementById('errorMessage').textContent = error.message || 'Error updating profile. Please try again.';
-                document.getElementById('errorMessage').style.display = 'block';
+                errorMessage.textContent = error.message || 'Error updating profile. Please try again.';
+                errorMessage.style.display = 'block';
             }
         });
     </script>

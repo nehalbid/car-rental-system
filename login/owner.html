@@ -23,6 +23,7 @@
     }
 
     .loading-spinner {
+      position: relative;
       width: 50px;
       height: 50px;
       border: 5px solid #f3f3f3;
@@ -30,6 +31,25 @@
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 15px;
+    }
+
+    .tick-mark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: #3498db;
+      display: none;
+    }
+
+    .show-tick .tick-mark {
+      display: block;
+    }
+
+    .show-tick .loading-spinner {
+      border-top-color: #2ecc71; /* Change color to green when showing tick */
+      animation: none; /* Stop spinning */
     }
 
     .loading-text {
@@ -191,6 +211,7 @@ button:hover{
   // Function to show loading overlay
   function showLoading() {
     document.querySelector('.loading-overlay').style.display = 'flex';
+    document.querySelector('.loading-text').textContent = 'Logging In'; // Set initial loading text
   }
 
   // Function to hide loading overlay
@@ -272,7 +293,11 @@ button:hover{
       const ownerDoc = await getDoc(doc(db, "owners", user.uid));
 
       if (ownerDoc.exists()) {
-        window.location.href = "../ownerdashboard/ownerdashboard.html"; // Redirect to Vehicle Owner Dashboard
+        document.querySelector('.loading-text').textContent = 'Login Successful! Redirecting...'; // Update text after successful login
+        document.querySelector('.loading-overlay').classList.add('show-tick'); // Add class to show tick
+        setTimeout(() => {
+          window.location.href = "../ownerdashboard/ownerdashboard.html"; // Redirect to Vehicle Owner Dashboard
+        }, 1000); // Delay of 1 second
       } else {
         hideLoading(); // Hide loading overlay before showing error
         alert('Access denied: You are not registered as a Vehicle Owner.');
@@ -287,7 +312,9 @@ button:hover{
   </script>
 <body>
   <div class="loading-overlay">
-    <div class="loading-spinner"></div>
+    <div class="loading-spinner">
+      <div class="tick-mark">&#10004;</div>
+    </div>
     <div class="loading-text">Login successful! Redirecting...</div>
   </div>
 	<div class="toggle-container">

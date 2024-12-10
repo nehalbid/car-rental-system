@@ -53,9 +53,9 @@ function handleRentNow() {
         return;
     }
     
-    // Calculate total price based on selected dates
+    // Calculate total price based on selected dates // for the slip
     const days = Math.max(1, Math.ceil((new Date(returnDate) - new Date(pickupDate)) / (1000 * 60 * 60 * 24)));
-    const totalPrice = days * 1499; // Rs 1499 per day for Honda Amaze
+    const totalPrice = days * 1499;
     
     // Redirect to the rental form page with query parameters
     const car = "Honda Amaze"; // Car name or model

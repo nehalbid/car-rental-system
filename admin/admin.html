@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <!-- My CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <title>Car Rental Admin</title>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="#" class="brand">
+            <i class='bx bxs-car'></i>
+            <span class="text">Car Rental</span>
+        </a>
+        <ul class="side-menu top">
+            <li class="active">
+                <a href="admin.html">
+                    <i class='bx bxs-dashboard' ></i>
+                    <span class="text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="../admin/bookings.html">
+                    <i class='bx bxs-calendar' ></i>
+                    <span class="text">Bookings</span>
+                </a>
+            </li>
+            <li>
+                <a href="customers.html">
+                    <i class='bx bxs-user' ></i>
+                    <span class="text">Customers</span>
+                </a>
+            </li>
+            <li>
+                <a href="carowner.html">
+                    <i class='bx bxs-user-check' ></i>
+                    <span class="text">Car Owners</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#">
+                    <i class='bx bxs-cog' ></i>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bxs-log-out-circle' ></i>
+                    <span class="text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- NAVBAR -->
+        <nav>
+            <i class='bx bx-menu' ></i>
+            <a href="#" class="nav-link">Categories</a>
+            <form action="#">
+                <div class="form-input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+                </div>
+            </form>
+            <input type="checkbox" id="switch-mode" hidden>
+            <label for="switch-mode" class="switch-mode"></label>
+            <a href="#" class="notification">
+                <i class='bx bxs-bell' ></i>
+                <span class="num">8</span>
+            </a>
+            <a href="#" class="profile">
+                <img src="img/people.jpg">
+            </a>
+        </nav>
+        <!-- NAVBAR -->
+
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Dashboard</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Dashboard</a>
+                        </li>
+                        <li><i class='bx bx-chevron-right' ></i></li>
+                        <li>
+                            <a class="active" href="#">Home</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#" class="btn-download" id="downloadBtn">
+                    <i class='bx bxs-cloud-download'></i>
+                    <span class="text">Download Report</span>
+                </a>
+            </div>
+
+            <ul class="box-info">
+                <li onclick="window.location.href='available_cars.html'" style="cursor: pointer;">
+                    <i class='bx bxs-car' ></i>
+                    <span class="text">
+                        <h3>18</h3>
+                        <p>Available Cars</p>
+                    </span>
+                </li>
+                <li onclick="window.location.href='bookings.html'" style="cursor: pointer;">
+                    <i class='bx bxs-calendar-check' ></i>
+                    <span class="text">
+                        <h3 id="totalBookings">0</h3>
+                        <p>Bookings</p>
+                    </span>
+                </li>
+                <li onclick="window.location.href='customers.html'" style="cursor: pointer;">
+                    <i class='bx bxs-user-circle' ></i>
+                    <span class="text">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </span>
+                </li>
+                <li onclick="window.location.href='carowner.html'" style="cursor: pointer;">
+                    <i class='bx bxs-user-check' ></i>
+                    <span class="text">
+                        <h3 id="totalOwners">0</h3>
+                        <p>Total Owners</p>
+                    </span>
+                </li>
+            </ul>
+
+            <script type="module">
+                // Import Firebase modules
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+                import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+                // Your web app's Firebase configuration
+                const firebaseConfig = {
+                    apiKey: "AIzaSyD33I-RFoltc2HNLqlWYzFc6WgjDgqSNiA",
+                    authDomain: "car-rental-system-27b86.firebaseapp.com",
+                    projectId: "car-rental-system-27b86",
+                    storageBucket: "car-rental-system-27b86.appspot.com",
+                    messagingSenderId: "285344536169",
+                    appId: "1:285344536169:web:0fdee45bb88cd2eab434f8",
+                    measurementId: "G-470VBKVXS0"
+                };
+
+                // Initialize Firebase
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+
+                // Function to get user and owner counts
+                async function getCounts() {
+                    const usersSnapshot = await getDocs(collection(db, 'customers'));
+                    const ownersSnapshot = await getDocs(collection(db, 'owners'));
+                    const bookingsSnapshot = await getDocs(collection(db, 'bookings'));
+
+                    document.getElementById('totalUsers').innerText = usersSnapshot.size;
+                    document.getElementById('totalOwners').innerText = ownersSnapshot.size;
+                    document.getElementById('totalBookings').innerText = bookingsSnapshot.size;
+                }
+
+                // Fetch customer details and counts on load
+                document.addEventListener('DOMContentLoaded', () => {
+                    getCounts();
+                });
+            </script>
+
+            <script>
+                // Retrieve data from LocalStorage
+                const savedData = JSON.parse(localStorage.getItem('rentalData')) || [];
+                const tableBody = document.getElementById('dashboardTableBody');
+
+                // Function to render the table
+                function renderTable() {
+                    tableBody.innerHTML = ""; // Clear existing rows
+
+                    savedData.forEach((data, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${data.name}</td>
+                            <td>${data.contactNumber}</td>
+                            <td>${data.drivingLicense}</td>
+                            <td>${data.aadharCard}</td>
+                            <td>${data.CarPickup }</td>
+                            <td>
+                                <button class="delete-btn" onclick="deleteEntry(${index})">Delete</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+
+                // Function to delete an entry
+                function deleteEntry(index) {
+                    // Remove the entry from the array
+                    savedData.splice(index, 1);
+
+                    // Update LocalStorage
+                    localStorage.setItem('rentalData', JSON.stringify(savedData));
+
+                    // Re-render the table
+                    renderTable();
+                }
+
+                // Initial render
+                renderTable();
+            </script>
+
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+</body>
+</html>

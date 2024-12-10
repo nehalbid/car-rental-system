@@ -182,28 +182,6 @@
             display: none;
         }
 
-        .alert-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert-message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            min-width: 300px;
-        }
-
         .avatar-showcase {
             position: fixed;
             top: 50%;
@@ -259,6 +237,27 @@
             display: block;
         }
 
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 768px) {
             .profile-container {
                 margin: 10px;
@@ -288,7 +287,6 @@
         </div>
 
         <div class="profile-content">
-            <div id="successMessage" class="alert-message success">Profile updated successfully!</div>
             <form id="profileForm">
                 <div class="profile-section">
                     <div class="profile-photo">
@@ -313,7 +311,7 @@
 
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
                     </div>
                 </div>
 
@@ -356,6 +354,8 @@
             <div class="avatar-option" onclick="selectAvatar('👤')">👤</div>
         </div>
     </div>
+
+    <div id="notification" class="notification" style="display: none;">Profile updated successfully!</div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
@@ -440,7 +440,6 @@
         // Handle form submission
         document.getElementById('profileForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            console.log('Form submitted'); // Debug log
             
             try {
                 const user = auth.currentUser;
@@ -457,25 +456,15 @@
                     updatedAt: new Date().toISOString()
                 };
 
-                console.log('Updating profile with:', formData); // Debug log
-
                 // Update user document in Firestore
                 await updateDoc(doc(db, 'customers', user.uid), formData);
-                console.log('Profile updated successfully'); // Debug log
                 
-                // Show success message
-                const successMessage = document.getElementById('successMessage');
-                if (successMessage) {
-                    console.log('Found success message element'); // Debug log
-                    successMessage.style.display = 'block';
-                    
-                    // Hide success message after 3 seconds
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 3000);
-                } else {
-                    console.log('Success message element not found'); // Debug log
-                }
+                // Show success notification
+                const notification = document.getElementById('notification');
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
             } catch (error) {
                 console.error('Error updating profile:', error);
             }

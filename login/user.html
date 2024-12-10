@@ -11,7 +11,7 @@
   <script type="module">
     // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
     // Firebase configuration
@@ -31,8 +31,57 @@
     const db = getFirestore(app);
 
     // Function to show loading overlay
-    function showLoading() {
+    function showLoading(message, isSuccess = false, showContinueMessage = false) {
       document.querySelector('.loading-overlay').style.display = 'flex';
+      document.querySelector('.loading-text').textContent = message;
+      
+      const spinner = document.querySelector('.loading-spinner');
+      const checkmark = document.querySelector('.success-checkmark');
+      const failureCross = document.querySelector('.failure-cross');
+      const continueText = document.querySelector('.continue-text');
+      const continueButton = document.querySelector('.continue-button');
+      
+      if (isSuccess) {
+        spinner.style.display = 'none';
+        checkmark.style.display = 'block';
+        failureCross.style.display = 'none';
+      } else {
+        spinner.style.display = 'block';
+        checkmark.style.display = 'none';
+        failureCross.style.display = 'none';
+      }
+
+      if (showContinueMessage) {
+        continueText.textContent = 'Press any key to continue';
+        continueText.style.display = 'block';
+        continueButton.style.display = 'block';
+        continueButton.addEventListener('click', function() {
+          document.querySelector('.loading-overlay').style.display = 'none';
+        });
+        // Add event listener for any key press
+        document.addEventListener('keydown', handleKeyPress, { once: true });
+      } else {
+        continueText.style.display = 'none';
+        continueButton.style.display = 'none';
+        document.removeEventListener('keydown', handleKeyPress);
+      }
+    }
+
+    // Function to handle any key press
+    function handleKeyPress(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Remove the event listener
+      document.removeEventListener('keydown', handleKeyPress);
+      
+      // Clear form fields
+      const form = document.querySelector('.signup form');
+      form.reset();
+      
+      // Hide loading overlay and switch to login
+      hideLoading();
+      document.getElementById('chk').checked = false;
     }
 
     // Function to hide loading overlay
@@ -43,13 +92,21 @@
     // Handle Signup Form Submission
     document.querySelector('.signup form').addEventListener('submit', async function (e) {
       e.preventDefault();
+      
+      // Disable the submit button to prevent double submission
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
 
       const email = e.target.querySelector('[type="email"]').value;
       const password = e.target.querySelector('[type="password"]').value;
 
       try {
+        showLoading('Creating your account...');
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+
+        // Send verification email
+        await sendEmailVerification(user);
 
         // Generate shorter customer ID using only first 4 chars of UID and last 4 digits of timestamp
         const timestamp = Date.now().toString().slice(-4);
@@ -60,18 +117,22 @@
           email: email,
           customerId: customerId,
           createdAt: serverTimestamp(),
-          role: 'customer'
+          role: 'customer',
+          emailVerified: false
         });
 
         // Sign out the user after signup
         await signOut(auth);
         
-        alert('Account created successfully! Please login to continue.');
-        // Switch to login form
-        document.getElementById('chk').checked = false;
+        // Show success message with checkmark and continue message
+        showLoading('Account created successfully! Please check your email for verification link before logging in.', true, true);
       } catch (error) {
+        hideLoading();
         console.error('Error:', error);
         alert(error.message);
+      } finally {
+        // Re-enable the submit button
+        if (submitButton) submitButton.disabled = false;
       }
     });
 
@@ -83,15 +144,31 @@
       const password = e.target.querySelector('[type="password"]').value;
 
       try {
+        showLoading('Logging in...');
         // Sign in user
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+
+        // Check if email is verified
+        if (!user.emailVerified) {
+          showLoading('Please verify your email before logging in.', false, false);
+          document.querySelector('.loading-text').style.color = 'green';
+          document.querySelector('.loading-spinner').style.display = 'none';
+          document.querySelector('.failure-cross').style.display = 'block';
+          setTimeout(() => {
+            document.querySelector('.loading-overlay').style.display = 'none';
+          }, 3000);
+          // Remove the alert for email verification
+          // alert('Please verify your email before logging in. Check your inbox for the verification link.');
+          return;
+        }
 
         // Check if user exists in customers collection
         const customerDoc = await getDoc(doc(db, 'customers', user.uid));
         
         if (!customerDoc.exists()) {
           await signOut(auth);
+          hideLoading();
           alert('Account not found. Please sign up first.');
           return;
         }
@@ -99,21 +176,23 @@
         const customerData = customerDoc.data();
         if (customerData.role !== 'customer') {
           await signOut(auth);
+          hideLoading();
           alert('Invalid user type. Please use the correct login page.');
           return;
         }
 
-        // Show loading overlay
-        showLoading();
-
+        // Show success and redirect
+        showLoading('Login successful! Redirecting...', true);
+        
         // Redirect after 1 second
         setTimeout(() => {
           window.location.href = '../userdashboard/userdashboard.html';
         }, 1000);
       } catch (error) {
-        hideLoading();
+        showLoading('Firebase: Error (auth/invalid-login-credentials).', false, true);
+        document.querySelector('.loading-spinner').style.display = 'none';
+        document.querySelector('.failure-cross').style.display = 'block';
         console.error('Login error:', error);
-        alert(error.message);
       }
     });
   </script>
@@ -293,9 +372,97 @@
       margin-bottom: 20px;
     }
 
+    .success-checkmark {
+      display: none;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 20px;
+      position: relative;
+      background: #4CAF50;
+      border-radius: 50%;
+    }
+
+    .success-checkmark::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 25px;
+      height: 12px;
+      border: solid white;
+      border-width: 0 4px 4px 0;
+      margin-top: -3px;
+    }
+
+    .failure-cross {
+      display: none;
+      width: 60px;
+      height: 60px;
+      margin-bottom: 20px;
+      position: relative;
+      background: #FF0000;
+      border-radius: 50%;
+    }
+
+    .failure-cross::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 25px;
+      height: 12px;
+      border: solid white;
+      border-width: 0 4px 4px 0;
+      margin-top: -3px;
+    }
+
+    .failure-cross::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      width: 25px;
+      height: 12px;
+      border: solid white;
+      border-width: 0 4px 4px 0;
+      margin-top: -3px;
+    }
+
     .loading-text {
       color: white;
       font-size: 18px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      max-width: 80%;
+      margin: 0 auto;
+    }
+
+    .continue-text {
+      color: #ffffff;
+      font-size: 14px;
+      margin-top: 15px;
+      opacity: 0.8;
+    }
+
+    .continue-button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+    }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+      color: #4CAF50;
+      font-size: 14px;
       font-family: Arial, sans-serif;
     }
 
@@ -315,7 +482,11 @@
 
   <div class="loading-overlay">
     <div class="loading-spinner"></div>
-    <div class="loading-text">Login successful! Redirecting...</div>
+    <div class="success-checkmark"></div>
+    <div class="failure-cross"></div>
+    <div class="loading-text"></div>
+    <div class="continue-text"></div>
+    <button class="continue-button">Dismiss</button>
   </div>
 
   <div class="main">
